@@ -30,6 +30,12 @@ const List_Notes = () => {
     
     }
 
+    const editNote = (id) => {
+        
+        navigate(`/add-update-note/${id}`);
+    
+    }
+
     return (
         <Container>
 
@@ -37,7 +43,8 @@ const List_Notes = () => {
                 <div className="col">
                     <div className="h1 text-center mx-auto mt-4">
                         <u> My Notes</u>
-                        <button onClick={addNote} type="button" className="btn btn-secondary m-5">Create Note</button>
+                        <button onClick={addNote} type="button" className="btn btn-success ms-4">Create Note</button>
+                        <button type="button" className="btn btn-link">Archived Notes</button>
 
                     </div>
                 </div>
@@ -59,7 +66,7 @@ const List_Notes = () => {
                                         <div className="col-auto m-1 p-0 todo-actions">
 
                                             <div className="container d-flex text-align-center justify-content-end">
-                                                <button className="btn btn-primary btn-block mx-2">Edit</button>
+                                                <button onClick={(id) => (editNote(e.id))} className="btn btn-primary btn-block mx-2">Edit</button>
                                                 <button className="btn btn-danger btn-block">Delete</button>
                                             </div>
 

@@ -1,43 +1,65 @@
 
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Axios from 'axios'
 
 import {
-   Container
+    Container
 } from 'reactstrap';
 
 const Create_Update_Notes = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    
+
+    const { id } = useParams();
+
     const navigate = useNavigate();
 
-    const addNote = (e) => {
-        e.preventDefault();
-    
-        const note = {
-          title: title,
-          content: content
+
+    useEffect(() => {
+        if(id){
+            findNoteToEdit(id);
         }
-    
+    }, [])
+
+    const findNoteToEdit = (id) => {
         try {
-          Axios.post(`http://localhost:8080/api/notes`, note).then((resp => {
-            navigate(`/notes`);
-            alert('Success');
-          }))
+            Axios.get(`http://localhost:8080/api/notes/${id}`).then((resp => {
+                setTitle(resp.data.title);
+                setContent(resp.data.content);                
+            }))
         } catch (e) { console.log(e); }
+    }
     
-      }
-    
+    const addOrEditeNote = (e) => {
+        e.preventDefault();
+        let uri = "http://localhost:8080/api/notes";
+        const note = {
+            title: title,
+            content: content
+        }
+        try {
+            !id ?
+            Axios.post("http://localhost:8080/api/notes", note).then((resp => {
+                navigate(`/notes`);
+                alert('Success');
+            }))
+            :
+            Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
+                navigate(`/notes`);
+                alert('Success');
+            }))
+        } catch (e) { console.log(e); }
+    }
+
 
     const goBack = (e) => {
         e.preventDefault();
-    
+
         navigate(`/notes`);
-    
-      }
-    
+
+    }
+
     return (
         <Container>
 
@@ -59,7 +81,7 @@ const Create_Update_Notes = () => {
                         </div>
 
                         <div className="col-auto px-0 mx-0 mr-2">
-                            <button onClick={addNote} type="button" className="btn btn-primary">Save</button>
+                            <button onClick={addOrEditeNote} type="button" className="btn btn-primary">Save</button>
                             <button onClick={goBack} type="button" className="btn btn-secondary m-2">Cancel</button>
                         </div>
                     </div>

@@ -2,6 +2,7 @@ package api.challenge.ensolvers.services;
 
 import api.challenge.ensolvers.dto.NoteDTO;
 import api.challenge.ensolvers.exceptions.AlreadyExistsException;
+import api.challenge.ensolvers.exceptions.ResourceNotFoundException;
 import api.challenge.ensolvers.models.Note;
 import api.challenge.ensolvers.repositories.NoteRepository;
 import api.challenge.ensolvers.services.interfaces.INoteService;
@@ -40,6 +41,25 @@ public class NoteServiceImp implements INoteService {
         Note newNote = noteRepository.save(note);
 
         return modelMapper.map(newNote, NoteDTO.class);
+    }
+
+    @Override
+    public NoteDTO findNoteById(int note_id) throws ResourceNotFoundException {
+        Note note = noteRepository.findById(note_id)
+                .orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
+
+        return modelMapper.map(note, NoteDTO.class);
+    }
+
+    @Override
+    public void updateNote(int note_id, NoteDTO updatedNote) throws ResourceNotFoundException {
+        Note note = noteRepository.findById(note_id)
+                .orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
+
+        note.setTitle(updatedNote.getTitle());
+        note.setContent(updatedNote.getContent());
+
+        noteRepository.save(note);
     }
 
 }
