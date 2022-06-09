@@ -10,6 +10,7 @@ import {
 const Create_Update_Notes = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [state, setState] = useState("");
 
     const { id } = useParams();
 
@@ -17,7 +18,7 @@ const Create_Update_Notes = () => {
 
 
     useEffect(() => {
-        if(id){
+        if (id) {
             findNoteToEdit(id);
         }
     }, [])
@@ -26,11 +27,13 @@ const Create_Update_Notes = () => {
         try {
             Axios.get(`http://localhost:8080/api/notes/${id}`).then((resp => {
                 setTitle(resp.data.title);
-                setContent(resp.data.content);                
+                setContent(resp.data.content);
+                setState(resp.data.state);
+
             }))
         } catch (e) { console.log(e); }
     }
-    
+
     const addOrEditeNote = (e) => {
         e.preventDefault();
         let uri = "http://localhost:8080/api/notes";
@@ -40,12 +43,13 @@ const Create_Update_Notes = () => {
         }
         try {
             !id ?
-            Axios.post("http://localhost:8080/api/notes", note).then((resp => {
-                navigate(`/notes`);
-                alert('Success');
-            }))
-            :
-            Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
+                Axios.post("http://localhost:8080/api/notes", note).then((resp => {
+                    navigate(`/notes`);
+                    alert('Success');
+                }))
+                :
+                note.state = state;
+                Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
                 navigate(`/notes`);
                 alert('Success');
             }))

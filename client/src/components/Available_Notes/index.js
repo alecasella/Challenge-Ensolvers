@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import {
-    Table, Container
+     Container
 } from 'reactstrap';
 
 
-const List_Notes = () => {
+const Available_Notes = () => {
     const [notes, setNotes] = useState([]);
 
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ const List_Notes = () => {
       const getAllNotes = () => {
         try {
           Axios.get(`http://localhost:8080/api/notes`).then((resp => {
-              setNotes(resp.data);
+              setNotes(resp.data.filter(note => note.state));
           }))
         } catch (e) { console.log(e); }
       }
@@ -36,6 +36,29 @@ const List_Notes = () => {
     
     }
 
+    const archivedNotes = (e) => {
+        e.preventDefault();
+        navigate(`/archived_notes`);
+    
+    }
+
+    const archiveNote = (id, title, content, state) => {
+        const result = window.confirm('Are you sure you want to archive this note?');
+        const newState = state ? false : true;
+        const note = {
+            title: title,
+            content: content,
+            state: newState
+        }
+        if (result) {
+            try {
+                    Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
+                        getAllNotes();
+                }))
+            } catch (e) { console.log(e); }      
+         } 
+    }
+
     return (
         <Container>
 
@@ -44,7 +67,7 @@ const List_Notes = () => {
                     <div className="h1 text-center mx-auto mt-4">
                         <u> My Notes</u>
                         <button onClick={addNote} type="button" className="btn btn-success ms-4">Create Note</button>
-                        <button type="button" className="btn btn-link">Archived Notes</button>
+                        <button onClick={archivedNotes} type="button" className="btn btn-link">Archived Notes</button>
 
                     </div>
                 </div>
@@ -52,7 +75,7 @@ const List_Notes = () => {
 
             <div className="p-2 mx-4 border-black-25 border-bottom" />
             {
-                notes != [] ?
+                notes != "" ?
                     (
                         notes.map((e, i) => (
                             <div className="row mx-1 px-5 pb-3 w-60" key={i}>
@@ -67,7 +90,7 @@ const List_Notes = () => {
 
                                             <div className="container d-flex text-align-center justify-content-end">
                                                 <button onClick={(id) => (editNote(e.id))} className="btn btn-primary btn-block mx-2">Edit</button>
-                                                <button className="btn btn-danger btn-block">Delete</button>
+                                                <button onClick={(id, title, content, state) => (archiveNote(e.id, e.title, e.content, e.state))} className="btn btn-danger btn-block">Archive</button>
                                             </div>
 
                                         </div>
@@ -76,18 +99,16 @@ const List_Notes = () => {
                                     </div>
                                 </div>
                             </div>
+                        
                         ))
                     )
                     :
                     (
-                       <p>Empty List</p>
+                       <p  className="h4 text-center mx-auto mt-4">Empty List</p>
                     )
             }
-
         </Container>
-
-
     );
 
 }
-export default List_Notes;
+export default Available_Notes;

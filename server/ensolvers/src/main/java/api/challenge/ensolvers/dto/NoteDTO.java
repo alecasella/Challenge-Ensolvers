@@ -7,7 +7,7 @@ public class NoteDTO {
 
     private String content;
 
-    private String state;
+    private boolean state;
 
     public int getId() {
         return id;
@@ -33,11 +33,11 @@ public class NoteDTO {
         this.content = content;
     }
 
-    public String getState() {
+    public boolean getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(boolean state) {
         this.state = state;
     }
 }

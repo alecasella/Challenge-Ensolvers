@@ -56,10 +56,20 @@ public class NoteServiceImp implements INoteService {
         Note note = noteRepository.findById(note_id)
                 .orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
 
+
         note.setTitle(updatedNote.getTitle());
         note.setContent(updatedNote.getContent());
+        note.setState(updatedNote.getState());
 
         noteRepository.save(note);
+    }
+
+    @Override
+    public void deleteNote(int note_id) throws ResourceNotFoundException {
+        Note note = noteRepository.findById(note_id)
+                .orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
+
+        noteRepository.delete(note);
     }
 
 }

@@ -59,7 +59,7 @@ public class Note {
         this.content = content;
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 
@@ -74,6 +74,7 @@ public class Note {
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
+
 
     @Override
     public String toString() {

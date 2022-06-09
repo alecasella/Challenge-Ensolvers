@@ -4,6 +4,7 @@ import api.challenge.ensolvers.dto.NoteDTO;
 import api.challenge.ensolvers.exceptions.AlreadyExistsException;
 import api.challenge.ensolvers.exceptions.ResourceNotFoundException;
 import api.challenge.ensolvers.services.NoteServiceImp;
+import api.challenge.ensolvers.services.interfaces.INoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.List;
 public class NoteController {
 
     @Autowired
-    NoteServiceImp noteService;
+    INoteService noteService;
 
     @GetMapping
     public ResponseEntity<List<NoteDTO>> getAll(){
@@ -37,8 +38,13 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<NoteDTO> addNote(@RequestBody NoteDTO noteDTO) throws AlreadyExistsException {
+    public ResponseEntity<NoteDTO> saveNote(@RequestBody NoteDTO noteDTO) throws AlreadyExistsException {
         return new ResponseEntity<>(noteService.addNote(noteDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{note_id}")
+    public ResponseEntity deleteNote(@PathVariable(value="note_id") int note_id) throws ResourceNotFoundException{
+        noteService.deleteNote(note_id);
+        return new ResponseEntity<>("Delete success", HttpStatus.OK);
+    }
 }
