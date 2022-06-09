@@ -18,7 +18,10 @@ const Available_Notes = () => {
       const getAllArchivedNotes = () => {
         try {
           Axios.get(`http://localhost:8080/api/notes`).then((resp => {
+            if(resp.data){
               setNotes(resp.data.filter(note => !note.state));
+            }else
+                navigate(`/notes`);
           }))
         } catch (e) { console.log(e); }
       }
@@ -91,7 +94,7 @@ const Available_Notes = () => {
                                     <div className="row px-3 align-items-center todo-item rounded">
 
                                         <div className="col px-1 m-1 d-flex align-items-center">
-                                            <a href="#" className=" text-decoration-none text-dark link-info form-control-lg  rounded px-3" >{e.title}</a>
+                                            <a href={`/add-update-note/${e.id}`} className=" text-decoration-none text-dark link-info form-control-lg  rounded px-3" >{e.title}</a>
                                         </div>
 
                                         <div className="col-auto m-1 p-0 todo-actions">
