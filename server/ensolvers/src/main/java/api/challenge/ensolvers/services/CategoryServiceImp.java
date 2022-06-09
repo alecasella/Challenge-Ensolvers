@@ -1,6 +1,7 @@
 package api.challenge.ensolvers.services;
 
 import api.challenge.ensolvers.dto.CategoryDTO;
+import api.challenge.ensolvers.dto.NoteDTO;
 import api.challenge.ensolvers.exceptions.ResourceNotFoundException;
 import api.challenge.ensolvers.models.Category;
 import api.challenge.ensolvers.models.Note;
@@ -10,6 +11,9 @@ import api.challenge.ensolvers.services.interfaces.ICategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImp implements ICategoryService {
@@ -36,5 +40,12 @@ public class CategoryServiceImp implements ICategoryService {
 
         return modelMapper.map(category, CategoryDTO.class);
 
+    }
+
+    @Override
+    public List<CategoryDTO> getCategoriesByNoteId(int note_id) {
+        List<Category> categories = categoryRepository.findByNoteId(note_id);
+
+        return categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).collect(Collectors.toList());
     }
 }
