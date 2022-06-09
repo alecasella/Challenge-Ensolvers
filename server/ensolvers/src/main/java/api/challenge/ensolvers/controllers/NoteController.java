@@ -31,6 +31,11 @@ public class NoteController {
         return new ResponseEntity<>(noteService.findNoteById(note_id), HttpStatus.OK);
     }
 
+    @GetMapping("/note/{category_description}")
+    public ResponseEntity<List<NoteDTO>> getNoteByCategoryId(@PathVariable(value = "category_description") String category_description) throws ResourceNotFoundException{
+        return new ResponseEntity<>(noteService.getNoteByCategoryDescription(category_description), HttpStatus.OK);
+    }
+
     @PutMapping("/{note_id}")
     public ResponseEntity updateNote(@PathVariable(value = "note_id") int note_id, @RequestBody NoteDTO updatedNote) throws ResourceNotFoundException{
         noteService.updateNote(note_id, updatedNote);

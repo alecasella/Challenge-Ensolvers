@@ -16,4 +16,6 @@ public interface INoteService {
     void updateNote(int note_id, NoteDTO updatedNote) throws ResourceNotFoundException;
 
     void deleteNote(int note_id) throws ResourceNotFoundException;
+
+    List<NoteDTO> getNoteByCategoryDescription(String description) throws ResourceNotFoundException;
 }

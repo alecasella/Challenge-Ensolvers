@@ -3,13 +3,16 @@ package api.challenge.ensolvers.services;
 import api.challenge.ensolvers.dto.NoteDTO;
 import api.challenge.ensolvers.exceptions.AlreadyExistsException;
 import api.challenge.ensolvers.exceptions.ResourceNotFoundException;
+import api.challenge.ensolvers.models.Category;
 import api.challenge.ensolvers.models.Note;
+import api.challenge.ensolvers.repositories.CategoryRepository;
 import api.challenge.ensolvers.repositories.NoteRepository;
 import api.challenge.ensolvers.services.interfaces.INoteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,9 @@ public class NoteServiceImp implements INoteService {
 
     @Autowired
     NoteRepository noteRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public List<NoteDTO> getAll() {
@@ -70,6 +76,19 @@ public class NoteServiceImp implements INoteService {
                 .orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
 
         noteRepository.delete(note);
+    }
+
+    @Override
+    public List<NoteDTO> getNoteByCategoryDescription(String description) throws ResourceNotFoundException  {
+
+        Category category = categoryRepository.findByDescription(description);
+
+        Note note = noteRepository.findByCategories(category).orElseThrow(() -> new ResourceNotFoundException("The note doesnt exists"));
+
+        List<NoteDTO> aux = new ArrayList<>();
+        aux.add(modelMapper.map(note, NoteDTO.class));
+
+        return aux;
     }
 
 }

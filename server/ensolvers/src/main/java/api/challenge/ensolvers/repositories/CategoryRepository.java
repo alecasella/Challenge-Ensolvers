@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findByNoteId(int note_id);
+
+    Category findByDescription(String description);
 }

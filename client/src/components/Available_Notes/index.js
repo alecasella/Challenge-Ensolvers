@@ -2,45 +2,57 @@ import React, { useContext, useEffect, useState } from "react";
 import Axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import {
-     Container
+    Container
 } from 'reactstrap';
 
 
 const Available_Notes = () => {
     const [notes, setNotes] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
+    const [categories, setCategories] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-          getAllNotes();
-      },[])
-    
-      const getAllNotes = () => {
+        getAllNotes();
+        getAllCategories();
+    }, [])
+
+    const getAllNotes = () => {
         try {
-          Axios.get(`http://localhost:8080/api/notes`).then((resp => {
-              if(resp.data)
-              setNotes(resp.data.filter(note => note.state));
-          }))
+            Axios.get(`http://localhost:8080/api/notes`).then((resp => {
+                if (resp.data)
+                    setNotes(resp.data.filter(note => note.state));
+            }))
         } catch (e) { console.log(e); }
-      }
-    
+    }
+
+    const getAllCategories = () => {
+        try {
+            Axios.get(`http://localhost:8080/api/categories`).then((resp => {
+                if (resp.data)
+                    setCategories(resp.data);
+            }))
+        } catch (e) { console.log(e); }
+    }
+
     const addNote = (e) => {
         e.preventDefault();
 
         navigate(`/add-update-note`);
-    
+
     }
 
     const editNote = (id) => {
-        
+
         navigate(`/add-update-note/${id}`);
-    
+
     }
 
     const archivedNotes = (e) => {
         e.preventDefault();
         navigate(`/archived_notes`);
-    
+
     }
 
     const archiveNote = (id, title, content, state) => {
@@ -53,12 +65,22 @@ const Available_Notes = () => {
         }
         if (result) {
             try {
-                    Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
-                        getAllNotes();
+                Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
+                    getAllNotes();
                 }))
-            } catch (e) { console.log(e); }      
-         } 
+            } catch (e) { console.log(e); }
+        }
     }
+
+    const foundCategories = (e) => {
+        e.preventDefault();
+
+        try {
+            Axios.get(`http://localhost:8080/api/notes/note/${selectedCategory}`).then((resp => {
+                if (resp.data)
+                    setNotes(resp.data);
+            }))
+        } catch (e) { console.log(e); }    }
 
     return (
         <Container>
@@ -72,6 +94,19 @@ const Available_Notes = () => {
 
                     </div>
                 </div>
+            </div>
+
+            <div className="row">
+                <b >Filter By: </b>
+                <select className=" p-2 col-3" onChange={(e) => setSelectedCategory(e.target.value)} required >
+                    {
+                        categories.map((o, i) => (
+                                    <option key={i} value={o.description}>{o.description}</option>
+                        ))
+                    }
+                </select>
+                <button onClick={foundCategories} className="col-1">Select</button>
+
             </div>
 
             <div className="p-2 mx-4 border-black-25 border-bottom" />
@@ -100,12 +135,12 @@ const Available_Notes = () => {
                                     </div>
                                 </div>
                             </div>
-                        
+
                         ))
                     )
                     :
                     (
-                       <p  className="h4 text-center mx-auto mt-4">Empty List</p>
+                        <p className="h4 text-center mx-auto mt-4">Empty List</p>
                     )
             }
         </Container>

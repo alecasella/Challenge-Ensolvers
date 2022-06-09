@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,15 @@ public class CategoryServiceImp implements ICategoryService {
     public List<CategoryDTO> getAll() {
         List<Category> categories = categoryRepository.findAll();
 
-        return categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).collect(Collectors.toList());
+        List<Category> aux = new ArrayList<>();
+
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getNote().getState()){
+                aux.add(categories.get(i));
+            }
+        }
+
+        return aux.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).collect(Collectors.toList());
     }
 
     public CategoryDTO save(int note_id, CategoryDTO categoryDTO) throws ResourceNotFoundException {
