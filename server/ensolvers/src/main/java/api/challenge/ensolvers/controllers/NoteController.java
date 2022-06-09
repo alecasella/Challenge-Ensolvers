@@ -45,6 +45,6 @@ public class NoteController {
     @DeleteMapping("/{note_id}")
     public ResponseEntity deleteNote(@PathVariable(value="note_id") int note_id) throws ResourceNotFoundException{
         noteService.deleteNote(note_id);
-        return new ResponseEntity<>("Delete success", HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 }

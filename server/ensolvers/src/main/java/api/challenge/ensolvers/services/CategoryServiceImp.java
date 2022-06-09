@@ -28,6 +28,13 @@ public class CategoryServiceImp implements ICategoryService {
     ModelMapper modelMapper;
 
 
+    @Override
+    public List<CategoryDTO> getAll() {
+        List<Category> categories = categoryRepository.findAll();
+
+        return categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).collect(Collectors.toList());
+    }
+
     public CategoryDTO save(int note_id, CategoryDTO categoryDTO) throws ResourceNotFoundException {
         Category category = modelMapper.map(categoryDTO, Category.class);
 
@@ -43,9 +50,17 @@ public class CategoryServiceImp implements ICategoryService {
     }
 
     @Override
-    public List<CategoryDTO> getCategoriesByNoteId(int note_id) {
+    public List<CategoryDTO> getCategoriesByNoteId(int note_id) throws ResourceNotFoundException {
         List<Category> categories = categoryRepository.findByNoteId(note_id);
+
+        if(categories.isEmpty()) throw new ResourceNotFoundException("Not founds categories with that id");
 
         return categories.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteCategory(int category_id) {
+        categoryRepository.deleteById(category_id);
+    }
+
 }

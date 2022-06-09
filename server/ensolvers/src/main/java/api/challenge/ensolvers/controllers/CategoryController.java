@@ -18,13 +18,26 @@ public class CategoryController {
     @Autowired
     ICategoryService categoryService;
 
-    @PostMapping("/{note_id}")
-    public ResponseEntity<CategoryDTO> saveCategory(@PathVariable(value="note_id") int note_id, @RequestBody CategoryDTO categoryDTO) throws ResourceNotFoundException {
-        return new ResponseEntity<>(categoryService.save(note_id, categoryDTO), HttpStatus.OK);
+
+    @GetMapping
+    public ResponseEntity<List<CategoryDTO>> getAll(){
+        return new ResponseEntity<>(categoryService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{note_id}")
     public ResponseEntity<List<CategoryDTO>> getCategoriesByNoteId(@PathVariable(value="note_id") int note_id) throws ResourceNotFoundException{
         return new ResponseEntity<>(categoryService.getCategoriesByNoteId(note_id), HttpStatus.OK);
     }
+
+    @PostMapping("/{note_id}")
+    public ResponseEntity<CategoryDTO> saveCategory(@PathVariable(value="note_id") int note_id, @RequestBody CategoryDTO categoryDTO) throws ResourceNotFoundException {
+        return new ResponseEntity<>(categoryService.save(note_id, categoryDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{category_id}")
+    public ResponseEntity deleteCategory(@PathVariable(value="category_id") int category_id) {
+        categoryService.deleteCategory(category_id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
