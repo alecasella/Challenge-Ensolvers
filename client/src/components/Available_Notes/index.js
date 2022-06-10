@@ -67,6 +67,7 @@ const Available_Notes = () => {
             try {
                 Axios.put(`http://localhost:8080/api/notes/${id}`, note).then((resp => {
                     getAllNotes();
+                    getAllCategories();
                 }))
             } catch (e) { console.log(e); }
         }
@@ -75,12 +76,19 @@ const Available_Notes = () => {
     const foundCategories = (e) => {
         e.preventDefault();
 
-        try {
-            Axios.get(`http://localhost:8080/api/notes/note/${selectedCategory}`).then((resp => {
-                if (resp.data)
-                    setNotes(resp.data);
-            }))
-        } catch (e) { console.log(e); }    }
+        if(selectedCategory == ""){
+            getAllNotes();
+        }
+        else{
+            try {
+                Axios.get(`http://localhost:8080/api/notes/note/${selectedCategory}`).then((resp => {
+                    if (resp.data)
+                        setNotes(resp.data);
+                }))
+            } catch (e) { console.log(e); }       
+        }
+
+    }
 
     return (
         <Container>
@@ -99,6 +107,7 @@ const Available_Notes = () => {
             <div className="row">
                 <b >Filter By: </b>
                 <select className=" p-2 col-3" onChange={(e) => setSelectedCategory(e.target.value)} required >
+                    <option default value="">select one</option> 
                     {
                         categories.map((o, i) => (
                                     <option key={i} value={o.description}>{o.description}</option>

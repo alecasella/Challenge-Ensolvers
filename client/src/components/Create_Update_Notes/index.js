@@ -47,7 +47,7 @@ const Create_Update_Notes = () => {
     const deleteCategoryOfNote = (idCategory) => {
         try {
             Axios.delete(`http://localhost:8080/api/categories/${idCategory}`).then((resp => {
-                findCategoriesOfNote(id);
+                navigate(`/notes`);
                 alert("Success");
             }))
         } catch (e) { console.log(e); }
@@ -177,7 +177,11 @@ const Create_Update_Notes = () => {
                             </div>
                         )
                         )
-                    ) : (<></>)
+                    ) 
+                    : 
+                    (
+                        <></>
+                    )
 
 
             }
