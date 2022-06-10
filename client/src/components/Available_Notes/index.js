@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
     Container
 } from 'reactstrap';
+import { AuthContext } from '../../contexts/auth';
 
 
 const Available_Notes = () => {
@@ -11,9 +12,13 @@ const Available_Notes = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [categories, setCategories] = useState([]);
 
+    const { loggedUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!loggedUser) 
+        navigate('/logout');
+        
         getAllNotes();
         getAllCategories();
     }, [])

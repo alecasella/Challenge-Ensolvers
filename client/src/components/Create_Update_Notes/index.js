@@ -1,11 +1,13 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from 'axios'
 
 import {
     Container, Row, Col
 } from 'reactstrap';
+import { AuthContext } from '../../contexts/auth';
+
 
 const Create_Update_Notes = () => {
     const [title, setTitle] = useState("");
@@ -16,10 +18,14 @@ const Create_Update_Notes = () => {
 
     const { id } = useParams();
 
+    const { loggedUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
 
     useEffect(() => {
+        if (!loggedUser) 
+        navigate('/logout');
+
         if (id) {
             findNoteToEdit(id);
             findCategoriesOfNote(id);
